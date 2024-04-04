@@ -1,0 +1,35 @@
+
+
+server:
+  port: 8084  # Assuming your API gateway runs on port 8080
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8762/eureka # URL of the Eureka server if you're using service discovery
+
+# Define routes for your services
+spring:
+ application:
+    name: bank-api-gateway
+ cloud:
+    gateway:
+      routes:
+        - id: account-service-route
+          uri: lb://ACCOUNT-SERVICE  # Load balanced URI for ACCOUNT-SERVICE
+          predicates:
+            - Path=/account/**  # Route requests with /accounts/** path to ACCOUNT-SERVICE
+
+        - id: customer-service-route
+          uri: lb://CUSTOMER-SERVICE  # Load balanced URI for CUSTOMER-SERVICE
+          predicates:
+            - Path=/customer/**  # Route requests with /customers/** path to CUSTOMER-SERVICE
+
+        - id: transaction-service-route
+          uri: lb://TRANSACTION-SERVICE  # Load balanced URI for TRANSACTION-SERVICE
+          predicates:
+            - Path=/transaction/**  # Route requests with /transactions/** path to TRANSACTION-SERVICE
